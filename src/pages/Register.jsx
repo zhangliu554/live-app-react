@@ -3,7 +3,7 @@ import Header from "../components/common/Header";
 import Icon from "../components/common/Icon";
 import Input from "../components/common/Input";
 import { Toast } from 'antd-mobile';
-
+const BASEURL = "http://39.98.126.184:8080/api";
 export default class Login extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +23,6 @@ export default class Login extends Component {
       flag:false
     }
   }
-
   render() {
     let type1 = this.state.type1;
     let type2 = this.state.type2;
@@ -130,31 +129,37 @@ export default class Login extends Component {
                 Toast.offline('两次密码不一致', 2)
               } else {
                 this.setState({
-                  pass: !this.state.pass,
                   flag: true
                 });
                 //fetch 请求验证码
-                fetch("http://39.98.126.184:8080/api/user/send_code/?phone="+this.state.telValue).then(res=>{
+                fetch(`${BASEURL}/user/send_code/?phone=${this.state.telValue}`).then(res=>{
                   res.json().then(data=>{
                     // console.log(data.status);
                     this.setState({
                       regCode: data.status
                     });
+                    if(this.state.regCode === 1){
+                      Toast.offline('用户已存在，可以去登陆了哦', 2)
+                    }else{
+                      this.setState({
+                        pass: !this.state.pass,
+                      });
+                      let siv = setInterval(() => {
+                        // eslint-disable-next-line react/no-direct-mutation-state
+                        this.setState({timer: (--this.state.timer)}, () => {
+                          if (this.state.timer === 0) {
+                            clearInterval(siv);
+                            this.setState({
+                              code: '重新发送',
+                              timer: 60,
+                              pass: !this.state.pass
+                            })
+                          }
+                        });
+                      }, 1000);
+                    }
                   })
                 });
-                let siv = setInterval(() => {
-                  // eslint-disable-next-line react/no-direct-mutation-state
-                  this.setState({timer: (--this.state.timer)}, () => {
-                    if (this.state.timer === 0) {
-                      clearInterval(siv);
-                      this.setState({
-                        code: '重新发送',
-                        timer: 60,
-                        pass: !this.state.pass
-                      })
-                    }
-                  });
-                }, 1000);
               }
             }
           }
@@ -165,7 +170,7 @@ export default class Login extends Component {
   //发送注册请求
   handelSend() {
     if(this.state.regVal !== "" && this.state.flag){
-      fetch("http://39.98.126.184:8080/api/user/regist/",{
+      fetch(`${BASEURL}/user/regist/`,{
         method:"POST",
         headers:{
           "Content-Type": "application/json;charset=UTF-8"
@@ -179,7 +184,7 @@ export default class Login extends Component {
         res.json().then(data=>{
           // console.log(data);
           if(data.status===0){
-            window.location.href="/login"
+            this.props.history.push("/login");
           }else{
             Toast.offline('用户已存在，可以去登陆了哦', 2)
           }

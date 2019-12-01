@@ -4,7 +4,8 @@ import Icon from "../components/common/Icon";
 import Input from "../components/common/Input";
 import {Link} from "react-router-dom"
 import { Toast } from 'antd-mobile';
-// const BASEURL = "http://39.98.126.184:8080/api";
+const BASEURL = "http://39.98.126.184:8080/api";
+const GOBASEURL = "http://localhost:8080";
 export default class Login extends Component{
   constructor(props){
     super(props);
@@ -28,7 +29,7 @@ export default class Login extends Component{
             </label>
             <Input href={'#iconmima1'} placeholder={'请输入密码'} type={this.state.type} show={this.state.show} change={this.handelPwdChange.bind(this)} click={this.getInputType.bind(this)}/>
             <div className={'go-register'}>
-              <a href={'http://localhost:8080/user/setter/changepassword'} className={'forgetPass'}>忘记密码 ? </a>
+              <a href={`${GOBASEURL}/user/setter/changepassword`} className={'forgetPass'}>忘记密码 ? </a>
               <Link className={'forgetPass'} to={'/register'}>立即注册</Link>
             </div>
             <button onClick={this.handelLogin.bind(this)} >登录</button>
@@ -74,7 +75,7 @@ export default class Login extends Component{
           Toast.offline('请输入密码', 1)
         }else{
           //fetch请求
-          fetch('http://39.98.126.184:8080/api/user/login/',{
+          fetch(`${BASEURL}/user/login/`,{
             method:"POST",
             headers:{
               "Content-Type": "application/json;charset=UTF-8"
@@ -87,8 +88,8 @@ export default class Login extends Component{
             res.json().then(data=>{
               // console.log(data)
               if(data.status===0){
-                console.log(data.token);
-                window.location.href='http://localhost:8080/home?token='+data.token;
+                // console.log(data.token);
+                window.location.href=`${GOBASEURL}/home?token=${data.token}`;
               }else {
                 // alert("手机号或密码错误，请重新登陆")
                 Toast.offline('手机号或密码错误，请重新登陆', 1)

@@ -48,7 +48,17 @@ a{
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    padding: 0.4rem 0;
+    padding: 0.5rem 0;
+    background: url("../assets/img/welcome.jpg") no-repeat ;
+    background-size: cover;
+    /*font-size: 0.16rem;*/
+}
+.my-logo{
+    width: 1.4rem;
+    height: 1.4rem;
+    background: url("../assets/img/logo.png") no-repeat center;
+    background-size: cover;
+    margin: 0 auto 0.1rem;
 }
 .Four{
     text-align: center;
@@ -82,6 +92,9 @@ a{
 .login-header p{
     display: flex;
     justify-content: center;
+    font-size: 0.2rem;
+    font-family: cursive;
+    color: rgb(158,108,56);
 }
 .a-header {
     width: 100vw;
